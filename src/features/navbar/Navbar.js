@@ -19,12 +19,13 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectItems } from "../cart/cartSlice";
 import { selectLoggedInUser } from "../auth/authSlice";
+import { selectUserInfo } from "../user/userSlice";
 
 
 const navigation = [
-  { name: "Dashboard", link: "#", user:true},
+  { name: "Dashboard", link: "/", user:true},
  
-  {name : 'Admin', link : '/admin', admin:true}
+  // {name : 'Admin', link : '/admin', admin:true}
 ];
 const userNavigation = [
   { name: "My Profile", link: "/profile" },
@@ -39,7 +40,8 @@ function classNames(...classes) {
 function Navbar({ children }) {
 
   const items = useSelector(selectItems);
-  const loguser = useSelector(selectLoggedInUser)
+  // const loguser = useSelector(selectLoggedInUser)
+  const userInfo = useSelector(selectUserInfo);
   return (
     <div>
       <div className="min-h-full">
@@ -50,14 +52,14 @@ function Navbar({ children }) {
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <Link to="/">
+                      {/* <Link to="/"> */}
                       <img
                         className="h-10 w-20 rounded-xl"
                         // src=".././368793f8f4eb492b813c5d3bfa273bfe-free.png"
                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgfdkYdTMIvmxSqFNot8TAHJvT0lnY6CcqtQ&s"
                         // alt=".././4e4328ed8e2a4dd08718f1f16a95b36d-free.png"
                         />
-                        </Link>
+                        {/* </Link> */}
                     </div>
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
@@ -85,17 +87,21 @@ function Navbar({ children }) {
                       <Link to="/cart">
                       <button
                         type="button"
-                        className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                        className="relative rounded-full bg-gray-600 p-1 text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                       >
                         <span className="absolute -inset-1.5" />
                       
-                       {items.length>0 && <span class="inline-flex items-center rounded-md ml-3 bg-red-50 px-1.5 py-0.5 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                       {/* {items.length>0 && <span class="inline-flex items-center rounded-md ml-3 bg-red-50 px-1.5 py-0.5 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
                           {items.length}
-                        </span>}
-                        <ShoppingCartIcon
+                        </span>} */}
+                        {/* <ShoppingCartIcon
                           className="h-6 w-6"
                           aria-hidden="true"
-                        />
+                        /> */}
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 text-white">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+    </svg>
+    {items.length>0 && <span class="absolute -top-2 left-4 rounded-full bg-red-500 p-0.5 px-2 text-sm text-red-50">{items.length}</span>}
                       </button>
                       </Link>
 
@@ -192,29 +198,35 @@ function Navbar({ children }) {
                       />
                     </div>
                     <div className="ml-3">
-                      <div className="text-base font-medium leading-none text-white">
-                        {loguser.name}
+                      <div className="text-base font-medium leading-none text-black">
+                        {userInfo && userInfo.name}
                       </div>
-                      <div className="text-sm font-medium leading-none text-gray-400">
-                        {loguser.email}
+                      <div className="text-sm font-medium leading-none text-black">
+                        {userInfo && userInfo.email}
                       </div>
                     </div>
                     <Link to="/cart">
                     <button
                       type="button"
-                      className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                      className="relative ml-auto flex-shrink-0 rounded-full bg-gray-600 p-1 text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                     >
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">View notifications</span>
-                      <ShoppingCartIcon
+                      {/* <ShoppingCartIcon
                         className="h-6 w-6"
                         aria-hidden="true"
-                      />
+                      /> */}
+                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 text-white-900">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+    </svg>
+    {items.length>0 && <span class="absolute -top-2 left-4 rounded-full bg-red-500 p-0.5 px-2 text-sm text-red-50">{items.length}</span>}
                     </button>
                   </Link>
-                      {items.length>0 && <span class="inline-flex items-center rounded-md  bg-red-50 mb-7 -ml-3 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                      {/* {items.length>0 && <span class="inline-flex items-center rounded-md  bg-red-50 mb-7 -ml-3 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
                         {items.length}
-                      </span>}
+                      </span>} */}
+                     
+   
                   </div>
                   <div className="mt-3 space-y-1 px-2">
                     {userNavigation.map((item) => (

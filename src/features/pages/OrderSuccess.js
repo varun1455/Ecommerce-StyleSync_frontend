@@ -1,26 +1,36 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate , Link, useParams} from "react-router-dom"
 import { resetCartAsync } from "../cart/cartSlice";
-import { selectLoggedInUser } from "../auth/authSlice";
+// import { selectLoggedInUser } from "../auth/authSlice";
 import { useEffect } from "react";
 import { resetOrder } from "../orders/orderSlice";
+// import { selectOrderPlaced } from "../orders/orderSlice";
 export default function OrderSuccess(){
     const params = useParams();
+    console.log(params);
     const dispatch = useDispatch();
-    const user = useSelector(selectLoggedInUser);
+    // const currentOrder = useSelector(selectOrderPlaced);
+    // console.log(currentOrder);
+    // const user = useSelector(selectLoggedInUser);
     
 
     useEffect(()=>{
 
-      dispatch(resetCartAsync(user.id));
+      // dispatch(resetCartAsync(user.id));
+      dispatch(resetCartAsync());
       dispatch(resetOrder())
 
-    },[dispatch, user])
+    // },[dispatch, user])
+    },[dispatch])
 
     return (
 
         <>
          {!params.id && <Navigate to="/" replace={true}></Navigate>}
+         {/* {currentOrder && currentOrder.paymentMethod==="card" && (
+          Navigate
+           to
+         )} */}
 
         <main className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
         <div className="text-center">

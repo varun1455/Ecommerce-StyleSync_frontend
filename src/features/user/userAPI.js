@@ -1,7 +1,9 @@
 
-export function fetchLoggedInUserOrders(userId) {
+export function fetchLoggedInUserOrders() {
   return new Promise(async (resolve) =>{
-    const response = await fetch('http://localhost:8080/orders/?user='+userId) 
+    const response = await fetch('http://localhost:8080/orders/own/', {
+      credentials:'include'
+    }) 
     const data = await response.json()
     resolve({data})
   }
@@ -9,9 +11,11 @@ export function fetchLoggedInUserOrders(userId) {
 }
 
 
-export function fetchLoggedInUser(userId) {
+export function fetchLoggedInUser() {
   return new Promise(async (resolve) =>{
-    const response = await fetch('http://localhost:8080/users/'+userId) 
+    const response = await fetch('http://localhost:8080/users/own', {
+      credentials:'include',
+    }) 
     const data = await response.json()
     // console.log({data})
     resolve({data})
@@ -26,7 +30,8 @@ export function updateUSer(updateData){
     const response = await fetch('http://localhost:8080/users/'+updateData.id, {
       method:'PATCH',
       body : JSON.stringify(updateData),
-      headers : {'content-type' : 'application/json'}
+      headers : {'content-type' : 'application/json'},
+      credentials:'include'
     })
     const data = await response.json()
     console.log({data});

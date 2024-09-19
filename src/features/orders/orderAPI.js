@@ -5,7 +5,8 @@ export function addOrder(orderItem) {
     const response = await fetch('http://localhost:8080/orders', {
       method:'POST',
       body : JSON.stringify(orderItem),
-      headers : {'content-type' : 'application/json'}
+      headers : {'content-type' : 'application/json'},
+      credentials:'include'
     })
     const data = await response.json()
     resolve({data});
@@ -20,6 +21,7 @@ export function updateOrder(order) {
       method: 'PATCH',
       body: JSON.stringify(order),
       headers: { 'content-type': 'application/json' },
+      credentials:'include'
     });
     const data = await response.json();
     resolve({ data });

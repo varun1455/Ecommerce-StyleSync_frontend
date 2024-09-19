@@ -12,7 +12,7 @@ import { Navigate } from "react-router-dom";
 
         useEffect(()=>{
 
-            dispatch(signOutUSerAsync(user.id))
+            dispatch(signOutUSerAsync())
 
         })
 

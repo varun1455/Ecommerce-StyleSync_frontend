@@ -1,25 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchLoggedInUserOrderAsync, selectUserOrders } from "../userSlice";
-import { selectLoggedInUser } from "../../auth/authSlice";
+import { fetchLoggedInUserOrderAsync, selectUserOrders, selectOrdersLoading } from "../userSlice";
+// import { selectLoggedInUser } from "../../auth/authSlice";
 
 export function UserOrders() {
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(true);
+  // const [open, setOpen] = useState(true);
 
  
-  const logUser = useSelector(selectLoggedInUser);
+  // const logUser = useSelector(selectLoggedInUser);
   // console.log(orders);
   
   useEffect(() => {
-    dispatch(fetchLoggedInUserOrderAsync(logUser.id));
+    dispatch(fetchLoggedInUserOrderAsync());
   }, []);
   
   const orders = useSelector(selectUserOrders);
+  const ordersLoad = useSelector(selectOrdersLoading);
+
+
+  if(ordersLoad){
+    return (
+      <div class='flex space-x-2 justify-center items-center bg-white h-screen '>
+      	<span class='sr-only'>Loading...</span>
+  	    <div class='h-8 w-8 bg-black rounded-full animate-bounce [animation-delay:-0.3s]'></div>
+	      <div class='h-8 w-8 bg-black rounded-full animate-bounce [animation-delay:-0.15s]'></div>
+	      <div class='h-8 w-8 bg-black rounded-full animate-bounce'></div>
+      </div>
+    )
+
+  }
   return (
     <>
       {orders.map((order) => (
-        <div>
+        <div key={order.id}>
           <div className="mx-auto mt-12 max-w-7xl bg-white px-4 sm:px-6 lg:px-6">
             <h3 className="text-2xl p-4 mt-6  font-mono">
               Order #{order.id}
@@ -28,7 +42,7 @@ export function UserOrders() {
             <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
               <div className="flow-root">
                 <ul role="list" className="-my-6 divide-y divide-gray-200">
-                  {order.items.map((item) => (
+                  {order && order.items.map((item) => (
                     <li key={item.id} className="flex py-6">
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img

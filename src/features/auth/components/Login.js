@@ -18,6 +18,7 @@ export function Login() {
   const dispatch = useDispatch();
 
   const error = useSelector(selectError);
+  console.log(error);
   const user = useSelector(selectLoggedInUser)
 
 
@@ -79,8 +80,11 @@ export function Login() {
               <div className="mt-2">
                 <input
                   id="password"
-                  {...register("password", { required: "password is required" })}
+                  {...register("password", { required: "password is required",
+                    message: "passowrd is required or incorrect"
+                   })}
                   type="password"
+                  // message="password not vaild"
                   
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />

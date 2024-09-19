@@ -4,13 +4,15 @@ import { fetchLoggedInUser, fetchLoggedInUserOrders,updateUSer } from './userAPI
 const initialState = {
   userOrders: [],
   status: 'idle',
-  userInfo : null
+  userInfo : null,
+  userLoading : false,
+  ordersLoading : false 
 };
 
 export const fetchLoggedInUserOrderAsync = createAsyncThunk(
   'user/fetchLoggedInUserOrders',
-  async (id) => {
-    const response = await fetchLoggedInUserOrders(id);
+  async () => {
+    const response = await fetchLoggedInUserOrders();
   
     return response.data;
   }
@@ -18,8 +20,8 @@ export const fetchLoggedInUserOrderAsync = createAsyncThunk(
 
 export const fetchLoggedInUserAsync = createAsyncThunk(
   'user/fetchLoggedInUser',
-  async (id) => {
-    const response = await fetchLoggedInUser(id);
+  async () => {
+    const response = await fetchLoggedInUser();
     // console.log(response)
     return response.data;
   }
@@ -51,19 +53,24 @@ export const userSlice = createSlice({
     builder
       .addCase(fetchLoggedInUserOrderAsync.pending, (state) => {
         state.status = 'loading';
+        state.ordersLoading = true
+       
       })
       .addCase(fetchLoggedInUserOrderAsync.fulfilled, (state, action) => {
         state.status = 'idle';
-        
+        state.ordersLoading= false;
         state.userOrders = action.payload;
       })
 
       .addCase(fetchLoggedInUserAsync.pending, (state) => {
         state.status = 'loading';
+        state.userLoading = true;
+        
       })
       .addCase(fetchLoggedInUserAsync.fulfilled, (state, action) => {
         state.status = 'idle';
         
+        state.userLoading = false;
         state.userInfo = action.payload;
       })
 
@@ -73,13 +80,15 @@ export const userSlice = createSlice({
       .addCase(updateUserAsync.fulfilled, (state, action) => {
         state.status = 'idle';
         
-        state.userOrders = action.payload;
+        state.userInfo = action.payload;
       })
   },
 });
 
 export const selectUserOrders = (state)=>state.user.userOrders;
 export const selectUserInfo = (state) => state.user.userInfo;
+export const selectuserLoader = (state) => state.user.userLoading;
+export const selectOrdersLoading = (state) => state.user.ordersLoading;
 
 
 

@@ -89,7 +89,7 @@ export default function ProductList() {
       // delete newfilter[section.id];
     }
 
-    console.log({newfilter})
+   
     setFilter(newfilter);
     // dispatch(fetchProductsByFiltersAsync(newfilter));
     // console.log(section.id, option.value)
@@ -381,7 +381,7 @@ function DesktopFilter({ handleFilter, filters }) {
                           id={`filter-${section.id}-${optionIdx}`}
                           name={`${section.id}[]`}
                           defaultValue={option.value}
-                          type="checkbox"
+                          type="radio"
                           defaultChecked={option.checked}
                           // onChange={e=>console.log(e.target.value)}
                           onChange={(e) => handleFilter(e, section, option)}

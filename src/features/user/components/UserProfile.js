@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectUserInfo, updateUserAsync } from "../userSlice";
+import { selectUserInfo, selectuserLoader, updateUserAsync } from "../userSlice";
 import { useForm } from "react-hook-form";
-import { selectLoggedInUser } from "../../auth/authSlice";
+// import { selectLoggedInUser } from "../../auth/authSlice";
 
 export function UserProfile() {
   const dispatch = useDispatch();
@@ -17,24 +17,30 @@ export function UserProfile() {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [showAddAddressform, setShowAddAddressform] = useState(false);
 
+  console.log(errors);
+
   const user = useSelector(selectUserInfo);
-  const loginUser = useSelector(selectLoggedInUser);
+  const loading = useSelector(selectuserLoader);
+  // console.log(user);
+  // const loginUser = useSelector(selectLoggedInUser);
+  // console.log(loginUser);
 
   const handleAdd = (address) =>{
-    const newUser = { ...user, addresses: [...loginUser.addresses, address] };
+    const newUser = { ...user, addresses: [...user.addresses, address] };
+    console.log(newUser);
     
     dispatch(updateUserAsync(newUser));
     setShowAddAddressform(false);
   }
 
   const handleRemove = (e, index) => {
-    const newUser = { ...user, addresses: [...loginUser.addresses] };
+    const newUser = { ...user, addresses: [...user.addresses] };
     newUser.addresses.splice(index, 1);
     dispatch(updateUserAsync(newUser));
   };
 
   const handleEdit = (addressUpdate, index) => {
-    const newUser = { ...user, addresses: [...loginUser.addresses] };
+    const newUser = { ...user, addresses: [...user.addresses] };
     newUser.addresses.splice(index, 1, addressUpdate);
     dispatch(updateUserAsync(newUser));
     setSelectedIndex(-1);
@@ -42,7 +48,7 @@ export function UserProfile() {
 
   const handleEditForm = (index) => {
     setSelectedIndex(index);
-    const address = loginUser.addresses[index];
+    const address = user.addresses[index];
     setValue("name", address.name);
     setValue("email", address.email);
     setValue("phoneNumber", address.phoneNumber);
@@ -52,15 +58,31 @@ export function UserProfile() {
     setValue("pinCode", address.pinCode);
   };
 
+  if(loading){
+
+    return (
+      <div class='flex space-x-2 justify-center items-center bg-white h-screen '>
+      	<span class='sr-only'>Loading...</span>
+  	    <div class='h-8 w-8 bg-black rounded-full animate-bounce [animation-delay:-0.3s]'></div>
+	      <div class='h-8 w-8 bg-black rounded-full animate-bounce [animation-delay:-0.15s]'></div>
+	      <div class='h-8 w-8 bg-black rounded-full animate-bounce'></div>
+      </div>
+    )
+  }
+
   return (
     <>
       <div className="mx-auto mt-12 max-w-7xl bg-white px-4 sm:px-6 lg:px-8">
+
+      
         <h4 className="text-xl pt-4 pl-2 font-semibold text-blue-600">
-          Name: {loginUser.name}
+         
+          Name: {user && user.name}
         </h4>
 
         <h4 className="text-xl p-2 mb-2  font-semibold text-blue-500">
-          Email: {loginUser.email}
+          
+          Email: {user && user.email}
         </h4>
 
         {/* {user.role === "admin" && (
@@ -80,9 +102,9 @@ export function UserProfile() {
 
           {showAddAddressform  ? (
                       <form
-                        noValidate
+                       noValidate
                         onSubmit={handleSubmit((data) => {
-                          console.log(data);
+                          // console.log(data);
                           handleAdd(data);
                         })}
                       >
@@ -117,6 +139,10 @@ export function UserProfile() {
                                     id="name"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
+
+                                  {errors.name && (
+                                   <p className="text-red-500">{errors.name.message}</p>
+                                  )}
                                 </div>
                               </div>
 
@@ -141,6 +167,10 @@ export function UserProfile() {
                                     type="email"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
+                                  {errors.email && (
+                                    <p className="text-red-500">{errors.email.message}</p>
+
+                                  )}
                                 </div>
                               </div>
 
@@ -156,14 +186,24 @@ export function UserProfile() {
                                     type="tel"
                                     {...register("phoneNumber", {
                                       required: "phone number is required",
+                                      maxLength:{
+                                        value:10,
+                                        message:"Phone Number cannot be larger than 10 Digits"
+                                      },
                                       pattern: {
-                                        value: /(\+)?(91)?( )?[789]\d{9}/g,
+                                        // value: /^[0-9]{0,5}[ ]{0,1}[0-9]{0,6}$/g,
+                                        value: /^[6-9]\d{9}$/,
+                                       
                                         message: "Invalid mobile bnumber",
                                       },
                                     })}
                                     id="phone"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
+                                  {errors.phoneNumber && (
+
+                                   <p className="text-red-500">{errors.phoneNumber.message}</p>
+                                  )}
                                 </div>
                               </div>
 
@@ -177,12 +217,20 @@ export function UserProfile() {
                                 <div className="mt-2">
                                   <input
                                     type="text"
-                                    {...register("street", {
-                                      required: "street is required",
+                                    {...register("street", {  required: "street is required",
+                                      pattern:{
+
+                                        // value: /\A(.*?)\s+(\d+[a-zA-Z]{0,1}\s{0,1}[-]{1}\s{0,1}\d*[a-zA-Z]{0,1}|\d+[a-zA-Z-]{0,1}\d*[a-zA-Z]{0,1})/s,
+                                        // message: "Invalid Street Address",
+                                      },
                                     })}
                                     id="street-address"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
+                                  {/* {errors.street && (
+                                       <p className="text-red-500">{errors.street.message}</p>
+                                  )} */}
+                                  
                                 </div>
                               </div>
 
@@ -196,13 +244,28 @@ export function UserProfile() {
                                 <div className="mt-2">
                                   <input
                                     type="text"
-                                    {...register("city", {
-                                      required: "city is required",
+                                    {...register("city", { required: "city is required",
+                                      minLength:{
+                                        value:4,
+                                        message: "City name must be at least 4 characters",
+                                      },
+                                      pattern :{
+                                        // value: /^[a-zA-Z\s'-]{4,50}$/,
+                                        // value: /[a-zA-Z][a-zA-Z0-9-_]{3,32}/gi,
+                                        value: /^[A-Za-z\s]+$/,
+                                        message:"Invalid City name"
+
+                                      },
+                                      
                                     })}
                                     id="city"
-                                    autoComplete="address-level2"
+                                    // autoComplete="address-level2"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
+                                  {
+                                    errors.city && (
+                                   <p className="text-red-500">{errors.city.message}</p>
+                                  )}
                                 </div>
                               </div>
 
@@ -218,10 +281,22 @@ export function UserProfile() {
                                     type="text"
                                     {...register("state", {
                                       required: "state is required",
+                                      minLength:{
+                                        value:4,
+                                        message: "state name must be at least 4 characters",
+                                      },
+                                      pattern:{
+                                        valid: /[a-zA-Z][a-zA-Z0-9-_]{3,32}/gi,
+                                        message: "Invalid State Name"
+                                      },
                                     })}
                                     id="region"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
+                                  {errors.state && (
+
+                                   <p className="text-red-500">{errors.state.message}</p>
+                                  )}
                                 </div>
                               </div>
 
@@ -237,11 +312,29 @@ export function UserProfile() {
                                     type="text"
                                     {...register("pinCode", {
                                       required: "pinCode is required",
+                                      minLength:{
+                                        value:4,
+                                        message: "Pincode must be at least 4 characters",
+                                      },
+                                      maxLength:{
+                                        value:7,
+                                        message : "pinCode cannot be more than 7 digits"
+                                      },
+                                      pattern:{
+                                        value : /-?\d{5}-?\s?-?\s?(\d{4})?/g,
+                                        message:"PinCode is Invalid"
+                                      },
                                     })}
                                     id="pinCode"
-                                    autoComplete="postal-code"
+                                    // autoComplete="postal-code"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
+
+                                  {
+                                    errors.pinCode && (
+
+                                      <p className="text-red-500">{errors.pinCode.message}</p>
+                                    )}
                                 </div>
                               </div>
                             </div>
@@ -265,8 +358,8 @@ export function UserProfile() {
             </h2>
 
             <ul role="list" className="divide-y divide-gray-100">
-              {loginUser.addresses &&
-                loginUser.addresses.map((address, index) => (
+              {user && user.addresses &&
+                user.addresses.map((address, index) => (
                   <div>
                     {selectedIndex === index ? (
                       <form
@@ -286,7 +379,8 @@ export function UserProfile() {
                               mail.
                             </p>
 
-                            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                           
+                             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                               <div className="sm:col-span-3">
                                 <label
                                   htmlFor="name"
@@ -307,6 +401,10 @@ export function UserProfile() {
                                     id="name"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
+
+                                  {errors.name && (
+                                   <p className="text-red-500">{errors.name.message}</p>
+                                  )}
                                 </div>
                               </div>
 
@@ -331,6 +429,10 @@ export function UserProfile() {
                                     type="email"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
+                                  {errors.email && (
+                                    <p className="text-red-500">{errors.email.message}</p>
+
+                                  )}
                                 </div>
                               </div>
 
@@ -346,14 +448,24 @@ export function UserProfile() {
                                     type="tel"
                                     {...register("phoneNumber", {
                                       required: "phone number is required",
+                                      maxLength:{
+                                        value:10,
+                                        message:"Phone Number cannot be larger than 10 Digits"
+                                      },
                                       pattern: {
-                                        value: /(\+)?(91)?( )?[789]\d{9}/g,
+                                        // value: /^[0-9]{0,5}[ ]{0,1}[0-9]{0,6}$/g,
+                                        value: /^[6-9]\d{9}$/,
+                                       
                                         message: "Invalid mobile bnumber",
                                       },
                                     })}
                                     id="phone"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
+                                  {errors.phoneNumber && (
+
+                                   <p className="text-red-500">{errors.phoneNumber.message}</p>
+                                  )}
                                 </div>
                               </div>
 
@@ -367,12 +479,20 @@ export function UserProfile() {
                                 <div className="mt-2">
                                   <input
                                     type="text"
-                                    {...register("street", {
-                                      required: "street is required",
+                                    {...register("street", {  required: "street is required",
+                                      pattern:{
+
+                                        // value: /\A(.*?)\s+(\d+[a-zA-Z]{0,1}\s{0,1}[-]{1}\s{0,1}\d*[a-zA-Z]{0,1}|\d+[a-zA-Z-]{0,1}\d*[a-zA-Z]{0,1})/s,
+                                        // message: "Invalid Street Address",
+                                      },
                                     })}
                                     id="street-address"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
+                                  {/* {errors.street && (
+                                       <p className="text-red-500">{errors.street.message}</p>
+                                  )} */}
+                                  
                                 </div>
                               </div>
 
@@ -386,13 +506,28 @@ export function UserProfile() {
                                 <div className="mt-2">
                                   <input
                                     type="text"
-                                    {...register("city", {
-                                      required: "city is required",
+                                    {...register("city", { required: "city is required",
+                                      minLength:{
+                                        value:4,
+                                        message: "City name must be at least 4 characters",
+                                      },
+                                      pattern :{
+                                        // value: /^[a-zA-Z\s'-]{4,50}$/,
+                                        // value: /[a-zA-Z][a-zA-Z0-9-_]{3,32}/gi,
+                                        value: /^[A-Za-z\s]+$/,
+                                        message:"Invalid City name"
+
+                                      },
+                                      
                                     })}
                                     id="city"
-                                    autoComplete="address-level2"
+                                    // autoComplete="address-level2"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
+                                  {
+                                    errors.city && (
+                                   <p className="text-red-500">{errors.city.message}</p>
+                                  )}
                                 </div>
                               </div>
 
@@ -408,10 +543,22 @@ export function UserProfile() {
                                     type="text"
                                     {...register("state", {
                                       required: "state is required",
+                                      minLength:{
+                                        value:4,
+                                        message: "state name must be at least 4 characters",
+                                      },
+                                      pattern:{
+                                        valid: /[a-zA-Z][a-zA-Z0-9-_]{3,32}/gi,
+                                        message: "Invalid State Name"
+                                      },
                                     })}
                                     id="region"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
+                                  {errors.state && (
+
+                                   <p className="text-red-500">{errors.state.message}</p>
+                                  )}
                                 </div>
                               </div>
 
@@ -427,11 +574,29 @@ export function UserProfile() {
                                     type="text"
                                     {...register("pinCode", {
                                       required: "pinCode is required",
+                                      minLength:{
+                                        value:4,
+                                        message: "Pincode must be at least 4 characters",
+                                      },
+                                      maxLength:{
+                                        value:7,
+                                        message : "pinCode cannot be more than 7 digits"
+                                      },
+                                      pattern:{
+                                        value : /-?\d{5}-?\s?-?\s?(\d{4})?/g,
+                                        message:"PinCode is Invalid"
+                                      },
                                     })}
                                     id="pinCode"
-                                    autoComplete="postal-code"
+                                    // autoComplete="postal-code"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   />
+
+                                  {
+                                    errors.pinCode && (
+
+                                      <p className="text-red-500">{errors.pinCode.message}</p>
+                                    )}
                                 </div>
                               </div>
                             </div>

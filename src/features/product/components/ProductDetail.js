@@ -41,7 +41,7 @@ export function ProductDetail() {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
 
-  const user = useSelector(selectLoggedInUser);
+  // const user = useSelector(selectLoggedInUser);
   const product = useSelector(selectProductbyId);
   const items = useSelector(selectItems);
   const params = useParams();
@@ -62,7 +62,7 @@ export function ProductDetail() {
       
         product : product.id,
         quantity:1,
-        user:user.id
+        // user:user.id
       }
      
 
@@ -309,6 +309,10 @@ export function ProductDetail() {
                     type="submit"
                     className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   >
+                    <svg class="-ms-2 me-2 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4" />
+                  </svg>
+
                     Add to Cart
                   </button>
                 </form>

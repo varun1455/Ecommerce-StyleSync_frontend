@@ -14,12 +14,11 @@ import {
 } from "react-router-dom";
 
 import CartPage from './features/pages/CartPage';
-import Checkout from './features/pages/Checkout';
 import ProductDetailPage from './features/pages/ProductDetailPage';
 import Protected from './features/auth/components/Protected';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchItemsbyUserIdAysnc } from './features/cart/cartSlice';
-import { selectLoggedInUser } from './features/auth/authSlice';
+import { checkLoginAuthAsync, selectLoggedInUser } from './features/auth/authSlice';
 import PageNotFound from './features/pages/404';
 import OrderSuccess from './features/pages/OrderSuccess';
 import UserOrdersPage from './features/pages/UserOrdersPage';
@@ -27,39 +26,18 @@ import ProfilePage from './features/pages/ProfilePage';
 import { fetchLoggedInUserAsync } from './features/user/userSlice';
 import Logout from './features/auth/components/Logout';
 import ProtectedAdmin from './features/auth/components/ProtectedAdmin';
-import AdminHome from './features/pages/AdminHome';
 import AdminProductDetailPage from './features/pages/AdminProductDetailPage ';
-import AdminProductFomPage from './features/pages/AdminProductFomPage';
 import CheckoutPage from './features/pages/CheckoutPage';
+import StripeCheckout from './features/pages/Stripecheckout';
+import CompletePage from './features/pages/CompletePage';
+import CheckoutForm from './features/pages/CheckoutForm';
 
 const router = createBrowserRouter([
 
-  {
-    path: "/admin",
-    element: (
-    <ProtectedAdmin>
-      <AdminHome></AdminHome>
-    </ProtectedAdmin>
-    ),
-  },
+ 
 
-  {
-    path: "/admin/productForm",
-    element: (
-    <ProtectedAdmin>
-     <AdminProductFomPage></AdminProductFomPage>
-    </ProtectedAdmin>
-    ),
-  },
 
-  {
-    path: '/admin/product-form/edit/:id',
-    element: (
-    <ProtectedAdmin>
-     <AdminProductFomPage></AdminProductFomPage>
-    </ProtectedAdmin>
-    ),
-  },
+
   {
     path: "/",
     element: (
@@ -99,6 +77,33 @@ const router = createBrowserRouter([
     <CheckoutPage></CheckoutPage>
 
        </Protected>
+    )
+  },
+  {
+      path: "/stripe-checkout/", 
+      element:(
+        <Protected>
+
+          <StripeCheckout></StripeCheckout>
+        </Protected>
+      )
+
+  },
+  {
+    path: "/checkForm",
+    element:(
+      <Protected>
+        <CheckoutForm></CheckoutForm>
+      </Protected>
+    )
+  },
+  {
+    path : "/complete",
+    element:(
+      <Protected>
+
+        <CompletePage></CompletePage>
+      </Protected>
     )
   },
   {
@@ -159,10 +164,15 @@ function App() {
 
 
   useEffect(()=>{
+    dispatch(checkLoginAuthAsync());
+  },[]);
+
+
+  useEffect(()=>{
     if(user){
 
-      dispatch(fetchItemsbyUserIdAysnc(user.id))
-      dispatch((fetchLoggedInUserAsync(user.id)))
+      dispatch(fetchItemsbyUserIdAysnc())
+      dispatch((fetchLoggedInUserAsync()))
     }
   },[dispatch, user])
   

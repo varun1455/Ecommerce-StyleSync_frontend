@@ -4,6 +4,7 @@ import {
  
   
   deleteItemsfromCartAsync,
+  selectcartLoaded,
   selectItems,
   updateCartAsync,
 
@@ -21,6 +22,7 @@ export function Cart() {
   const [open, setOpen] = useState(true)
 
   const items = useSelector(selectItems)
+  const cartloader = useSelector(selectcartLoaded);
   // console.log(items);
 
   const totalAmount = items.reduce((sum, item)=> sum + item.product.price*item.quantity, 0);
@@ -37,13 +39,13 @@ export function Cart() {
 
   return (
    <>
-     {items.length===0 && <Navigate to="/" replace={true}></Navigate>}
+     {items.length===0 && cartloader &&  <Navigate to="/" replace={true}></Navigate>}
 <div className="mx-auto mt-12 max-w-7xl bg-white px-4 sm:px-6 lg:px-8">
   <h2 className="text-4xl p-4 mb-2 font-bold">Cart</h2>
     <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                         <div className="flow-root">
                           <ul role="list" className="-my-6 divide-y divide-gray-200">
-                            {items.map((item) => (
+                            { items.map((item) => (
                               <li key={item.product.id} className="flex py-6">
                                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                   <img

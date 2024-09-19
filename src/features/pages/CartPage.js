@@ -5,7 +5,7 @@ import Footer from '../../footer/Footer'
 
 function CartPage() {
   return (
-    <div>
+    <div> 
       <Navbar>
 
       <Cart></Cart>
