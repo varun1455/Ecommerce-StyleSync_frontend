@@ -8,7 +8,7 @@ function Home() {
   return (
     <div>
       <Navbar>
-        {/* <SliderContent></SliderContent> */}
+       
 
         <ProductList></ProductList>
         <Footer></Footer>

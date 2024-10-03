@@ -138,8 +138,8 @@ export default function ProductList() {
 
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900">
-              All Products
+            <h2 className="text-3xl font-bold tracking-tight text-red-900">
+              New Arrivals
             </h2>
 
             <div className="flex items-center">
@@ -239,7 +239,7 @@ function MobileFilter({
 }) {
   return (
     <>
-      <Transition show={mobileFiltersOpen}>
+      <Transition show={mobileFiltersOpen} >
         <Dialog
           className="relative z-40 lg:hidden"
           onClose={setMobileFiltersOpen}

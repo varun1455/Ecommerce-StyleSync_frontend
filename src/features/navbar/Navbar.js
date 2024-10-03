@@ -12,20 +12,17 @@ import {
 } from "@headlessui/react";
 import {
   Bars3Icon,
-  ShoppingCartIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectItems } from "../cart/cartSlice";
-import { selectLoggedInUser } from "../auth/authSlice";
+
 import { selectUserInfo } from "../user/userSlice";
 
 
 const navigation = [
   { name: "Dashboard", link: "/", user:true},
- 
-  // {name : 'Admin', link : '/admin', admin:true}
 ];
 const userNavigation = [
   { name: "My Profile", link: "/profile" },
@@ -40,7 +37,7 @@ function classNames(...classes) {
 function Navbar({ children }) {
 
   const items = useSelector(selectItems);
-  // const loguser = useSelector(selectLoggedInUser)
+  
   const userInfo = useSelector(selectUserInfo);
   return (
     <div>
@@ -55,9 +52,9 @@ function Navbar({ children }) {
                       {/* <Link to="/"> */}
                       <img
                         className="h-10 w-20 rounded-xl"
-                        // src=".././368793f8f4eb492b813c5d3bfa273bfe-free.png"
+                       
                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgfdkYdTMIvmxSqFNot8TAHJvT0lnY6CcqtQ&s"
-                        // alt=".././4e4328ed8e2a4dd08718f1f16a95b36d-free.png"
+                        
                         />
                         {/* </Link> */}
                     </div>
@@ -91,13 +88,7 @@ function Navbar({ children }) {
                       >
                         <span className="absolute -inset-1.5" />
                       
-                       {/* {items.length>0 && <span class="inline-flex items-center rounded-md ml-3 bg-red-50 px-1.5 py-0.5 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
-                          {items.length}
-                        </span>} */}
-                        {/* <ShoppingCartIcon
-                          className="h-6 w-6"
-                          aria-hidden="true"
-                        /> */}
+                       
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 text-white">
       <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
     </svg>
@@ -172,20 +163,21 @@ function Navbar({ children }) {
               <DisclosurePanel className="md:hidden">
                 <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
                   {navigation.map((item) => (
+                    <Link to={item.link}>
                     <DisclosureButton
-                      key={item.name}
-                      as="a"
-                      href={item.href}
-                      className={classNames(
+                    key={item.name}
+                    
+                    className={classNames(
                         item.current
-                          ? "bg-gray-900 text-white"
-                          : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                        "block rounded-md px-3 py-2 text-base font-medium"
-                      )}
-                      aria-current={item.current ? "page" : undefined}
-                    >
+                        ? "bg-gray-900 text-white"
+                          : "text-gray-600 font-semibold hover:bg-gray-700 hover:text-white",
+                          "block rounded-md px-3 py-2 text-base font-medium"
+                        )}
+                        aria-current={item.current ? "page" : undefined}
+                        >
                       {item.name}
                     </DisclosureButton>
+                    </Link>
                   ))}
                 </div>
                 <div className="border-t border-gray-700 pb-3 pt-4">
@@ -208,36 +200,35 @@ function Navbar({ children }) {
                     <Link to="/cart">
                     <button
                       type="button"
-                      className="relative ml-auto flex-shrink-0 rounded-full bg-gray-600 p-1 text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                      className="relative ml-3 flex-shrink-0 rounded-full bg-gray-600 p-1 text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 "
                     >
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">View notifications</span>
-                      {/* <ShoppingCartIcon
-                        className="h-6 w-6"
-                        aria-hidden="true"
-                      /> */}
+                     
                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 text-white-900">
       <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
     </svg>
     {items.length>0 && <span class="absolute -top-2 left-4 rounded-full bg-red-500 p-0.5 px-2 text-sm text-red-50">{items.length}</span>}
                     </button>
                   </Link>
-                      {/* {items.length>0 && <span class="inline-flex items-center rounded-md  bg-red-50 mb-7 -ml-3 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
-                        {items.length}
-                      </span>} */}
+                     
                      
    
                   </div>
                   <div className="mt-3 space-y-1 px-2">
                     {userNavigation.map((item) => (
+                      <Link to = {item.link}>
                       <DisclosureButton
-                        key={item.name}
-                        as="a"
-                        href={item.href}
-                        className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                          // key={item.name}
+
+
+                        // as="a"
+                        // href={item.href}
+                        className="block rounded-md px-3 py-2 text-base font-medium text-gray-800 hover:bg-gray-700 hover:text-white"
                       >
                         {item.name}
                       </DisclosureButton>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -248,7 +239,7 @@ function Navbar({ children }) {
 
         <header className="bg-white shadow">
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <h1 className="text-4xl text-green-950 font-mono hover:font-mono tracking-tight ">
+            <h1 className="text-4xl text-green-800 font-serif font-semibold underline  hover:font-serif  ">
               StyleSync
             </h1>
           </div>
